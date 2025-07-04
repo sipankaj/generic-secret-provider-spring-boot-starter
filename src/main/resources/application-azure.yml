@@ -1,0 +1,9 @@
+secret:
+  backend: azure
+
+  azure:
+    vault-url: https://my-vault-name.vault.azure.net/   # Full URL of your Key Vault
+  preload-enabled: true
+  preload-keys:
+    - db.password
+    - jwt.secret

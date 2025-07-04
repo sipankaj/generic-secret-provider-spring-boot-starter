@@ -1,0 +1,8 @@
+secret:
+  backend: gcp
+  gcp:
+    project-id: my-gcp-project-id
+  preload-enabled: true
+  preload-keys:
+    - db.password
+    - jwt.secret

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: secret-provider-demo
+  profiles:
+    active: vault

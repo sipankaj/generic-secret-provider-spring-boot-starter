@@ -1,0 +1,9 @@
+secret:
+  backend: aws
+
+  aws:
+    region: us-east-1
+  preload-enabled: true
+  preload-keys:
+    - db.password
+    - jwt.secret

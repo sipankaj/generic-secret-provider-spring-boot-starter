@@ -1,0 +1,56 @@
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - 'r*'  # e.g. r1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode > private.key
+          gpg --batch --import private.key
+          gpg --list-secret-keys
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21  # or 17
+          server-id: central
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_PASSWORD }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          cache: maven
+
+      - name: Create minimal settings.xml
+        run: |
+          mkdir -p ~/.m2
+          cat <<EOF > ~/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.OSSRH_USERNAME }}</username>
+                <password>${{ secrets.OSSRH_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Set version from Git tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#r}  # Remove 'r' prefix
+          echo "Using version: $VERSION"
+          mvn versions:set -DnewVersion=$VERSION
+      - name: Deploy to OSSRH (manual close/release from UI)
+        run: |
+          mvn clean deploy -P release -DskipTests -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: my-app
+
+  cloud:
+    vault:
+      uri: https://vault.mycompany.com:8200
+      authentication: token
+      token: s.xxxxxxxx                        # Or use AppRole, etc.
+      connection-timeout: 5000
+      read-timeout: 15000
+      kv:
+        enabled: true
+        backend: secret                       # Mount path in Vault
+        default-context: application
+
+secret:
+  backend: vault
+  vault-path: secret/data/myapp              # Used by your HashiCorpVaultProvider
+  preload-enabled: true
+  preload-keys:
+    - db.password
+    - api.key
