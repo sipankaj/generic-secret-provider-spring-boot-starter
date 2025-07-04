@@ -152,4 +152,4 @@ This project is licensed under the **MIT License**.
 
 ---
 
-> Built with care by @sipankaj and powered by Spring Boot 💛
+> Built with care by [@sipankaj](https://github.com/sipankaj) and powered by Spring Boot 💛
